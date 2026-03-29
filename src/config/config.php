@@ -4,14 +4,13 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL & ~E_DEPRECATED);
 
 
-$host = "localhost";  
-$user = "root";       
-$password = "root";   
-$database = "eldpost"; 
-$port = 8888;
+$host = "melab.lnu.se";  
+$user = "kr222pb";       
+$password = "w4r3ZxY7";   
+$database = "kr222pb"; 
 
 
-$conn = new mysqli($host, $user, $password, $database, $port);
+$conn = new mysqli($host, $user, $password, $database);
 
 
 if ($conn->connect_error) {

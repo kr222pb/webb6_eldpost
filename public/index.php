@@ -26,7 +26,7 @@ require '../src/routes/soldiers.php';
 require '../src/routes/schedule.php';
 require '../src/routes/eldpost.php';
 require '../src/routes/schedule_generate.php';
-
+require '../src/routes/share.php';
 
 
 

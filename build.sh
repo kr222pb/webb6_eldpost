@@ -1,0 +1,12 @@
+npx google-closure-compiler \
+  --js public/js/dashboard.js \
+  --js public/js/script.js \
+  --js public/js/share.js \
+  --js public/js/soldiers.js \
+  --js public/js/tent.js \
+  --js public/js/time.js \
+  --entry_point=public/js/script.js \
+  --dependency_mode=PRUNE \
+  --module_resolution=BROWSER \
+  --js_output_file public/js/app.min.js \
+  --compilation_level SIMPLE

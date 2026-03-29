@@ -10,12 +10,13 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once '../src/config/config.php'; 
 require_once '../vendor/autoload.php';
 
+$app_url = 'https://melab.lnu.se/~kr222pb/webb6_eldpost/public';
+$app_path = '/~kr222pb/webb6_eldpost/public';
+
 $client = new Google\Client();
-$client->setAuthConfig(__DIR__ . '/../../client_credentials.json'); 
-$client->setRedirectUri('http://localhost:8888/auth');
-
+$client->setAuthConfig(__DIR__ . '/../../client_credentials.json');
+$client->setRedirectUri($app_url . '/auth');
 $client->setScopes(['openid', 'email', 'profile']);
-
 
 $app->get('/login', function (Request $req, Response $res, $args) {
     global $client;
@@ -40,7 +41,7 @@ $app->get('/auth', function (Request $req, Response $res, $args) {
     }
 
 
-    $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+    $token = $client->fetchAccessTokenWithAuthCode($params['code']);
 
 
     if (isset($token['error'])) {
@@ -63,8 +64,8 @@ $app->get('/auth', function (Request $req, Response $res, $args) {
 
     error_log(" Inloggning lyckades: " . json_encode($_SESSION['user']));
 
-    //  Omdirigerar användaren till startsidan
-    return $res->withRedirect('/');
+    // Omdirigerar användaren till startsidan
+    return $res->withRedirect('/~kr222pb/webb6_eldpost/public/');
 });
 
 
@@ -79,6 +80,6 @@ $app->get('/user', function (Request $req, Response $res, $args) {
 });
 $app->get('/logout', function (Request $req, Response $res, $args) {
     session_destroy(); 
-    return $res->withRedirect('/');
+    return $res->withRedirect('/~kr222pb/webb6_eldpost/public/');
 });
 

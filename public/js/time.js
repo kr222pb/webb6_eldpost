@@ -1,3 +1,4 @@
+const BASE = window.APP_BASE || "";
 class TimeSettings extends HTMLElement {
     connectedCallback() {
       this.innerHTML = `
@@ -54,7 +55,7 @@ class TimeSettings extends HTMLElement {
         }
   
         try {
-          const res = await fetch("/save-schedule", {
+          const res = await fetch(`${BASE}/save-schedule`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -90,6 +91,17 @@ class TimeSettings extends HTMLElement {
         );
         document.getElementById("dashboard")?.classList.add("active");
       });
+    }
+    resetForm() {
+      const startInput = this.querySelector("#eldpost_start");
+      const endInput = this.querySelector("#eldpost_end");
+      const vaktSelect = this.querySelector("#vaktpost_duration");
+      const patrullSelect = this.querySelector("#patrull_duration");
+
+      if (startInput) startInput.value = "";
+      if (endInput) endInput.value = "";
+      if (vaktSelect) vaktSelect.value = "1";
+      if (patrullSelect) patrullSelect.value = "1";
     }
   }
   

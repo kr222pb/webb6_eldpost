@@ -44,7 +44,11 @@ export class Tent {
         this.ctx.font = "16px Arial";
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
-        this.ctx.fillText(seatNumber, textX, textY);
+        if (occupied) {
+          this.ctx.fillText(occupied.name, textX, textY);
+        } else {
+          this.ctx.fillText(seatNumber, textX, textY);
+        }
       }
     }
   

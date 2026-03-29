@@ -1,5 +1,5 @@
 import { Tent } from './tent.js';
-
+const BASE = window.APP_BASE || "";
 class SoldierForm extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
@@ -46,10 +46,10 @@ class SoldierForm extends HTMLElement {
     this.loadRoles();
     this.setupEvents();
   }
-
+// Hämtar roller från backend 
   async loadRoles() {
     try {
-      const res = await fetch("/roles");
+      const res = await fetch(`${BASE}/roles`);
       const roles = await res.json();
       this.roles = roles;
 
@@ -64,7 +64,7 @@ class SoldierForm extends HTMLElement {
       console.error("Kunde inte ladda roller:", err);
     }
   }
-
+// Uppdaterar tältet när antal sovplatser ändras
   setupEvents() {
     this.querySelector("#numSeats").addEventListener("change", (e) => {
       this.maxSeats = parseInt(e.target.value);
@@ -79,7 +79,7 @@ class SoldierForm extends HTMLElement {
       document.getElementById("time-settings")?.classList.add("active");
     });
   }
-
+// Stoppar om alla sovplatser redan är fyllda
   addSoldier() {
     if (this.soldiers.length >= this.maxSeats) {
       alert("Max antal sovplatser uppnått.");
@@ -105,7 +105,24 @@ class SoldierForm extends HTMLElement {
     nameInput.value = "";
     this.updateSoldierList();
   }
+  // Nollställer formuläret när en ny eldpost skapas
+  resetForm() {
+    this.soldiers = [];
+    this.maxSeats = 4;
 
+    const numSeats = this.querySelector("#numSeats");
+    const soldierName = this.querySelector("#soldierName");
+    const roleSelect = this.querySelector("#roleSelect");
+    const soldierList = this.querySelector("#soldierList");
+
+    if (numSeats) numSeats.value = "4";
+    if (soldierName) soldierName.value = "";
+    if (roleSelect) roleSelect.selectedIndex = 0;
+    if (soldierList) soldierList.innerHTML = "";
+
+    this.tent.selectedSeat = null;
+    this.tent.drawTent([], this.maxSeats);
+  }
   updateSoldierList() {
     const container = this.querySelector("#soldierList");
     container.innerHTML = "";
@@ -177,18 +194,22 @@ class SoldierForm extends HTMLElement {
 
     try {
       for (const s of this.soldiers) {
-        await fetch("/soldiers", {
+        await fetch(`${BASE}/soldiers`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ...s, eldpost_id })
         });
       }
 
-      const schemaRes = await fetch(`/generate-schedule/${eldpost_id}`);
+      const schemaRes = await fetch(`${BASE}/generate-schedule`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eldpost_id })
+      });
       const schemaData = await schemaRes.json();
 
       if (schemaData.success) {
-        await fetch("/save-generated-schedule", {
+        await fetch(`${BASE}/save-generated-schedule`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
